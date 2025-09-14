@@ -33,4 +33,25 @@ export class UsersController {
   findAll() {
     return this.usersService.findAll();
   }
+
+  @Get('/all-students')
+  @Roles(Role.ADMIN)
+  @ApiOperation({ description: 'Get all students (Admin only)' })
+  getAllStudents() {
+    return this.usersService.getAllStudents();
+  }
+
+  @Get('/all-admins')
+  @Roles(Role.ADMIN)
+  @ApiOperation({ description: 'Get all admins (Admin only)' })
+  getAllAdmins() {
+    return this.usersService.getAllAdmins();
+  }
+
+  @Get('/all-lecturers')
+  @Roles(Role.ADMIN)
+  @ApiOperation({ description: 'Get all lecturers (Admin only)' })
+  getAllLecturers() {
+    return this.usersService.getAllLecturers();
+  }
 }

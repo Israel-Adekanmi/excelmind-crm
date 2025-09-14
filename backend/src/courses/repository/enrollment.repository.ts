@@ -5,7 +5,9 @@ import { Enrollment } from '../entity/enrollment.entity';
 
 @Injectable()
 export class EnrollmentRepository {
-  constructor(@InjectRepository(Enrollment) private readonly repo: Repository<Enrollment>) {}
+  constructor(
+    @InjectRepository(Enrollment) private readonly repo: Repository<Enrollment>,
+  ) {}
 
   create(data: Partial<Enrollment>) {
     return this.repo.create(data);
@@ -23,7 +25,14 @@ export class EnrollmentRepository {
     return this.repo.find({ where: { courseId }, relations: ['student'] });
   }
 
+  findAll() {
+    return this.repo.find({ relations: ['student', 'course'] });
+  }
+
   findById(id: string) {
-    return this.repo.findOne({ where: { id }, relations: ['student', 'course'] });
+    return this.repo.findOne({
+      where: { id },
+      relations: ['student', 'course'],
+    });
   }
 }

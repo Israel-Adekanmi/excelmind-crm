@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
+import { Role } from 'src/auth/enum/role.enum';
 
 @Injectable()
 export class UserRepository {
@@ -23,5 +24,9 @@ export class UserRepository {
 
   findAll() {
     return this.repo.find();
+  }
+
+  findByRole(role: Role) {
+    return this.repo.find({ where: { role } });
   }
 }

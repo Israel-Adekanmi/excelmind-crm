@@ -6,6 +6,7 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { User } from './users/user.entity';
 import { CoursesModule } from './courses/courses.modules';
+import { AssignmentsModule } from './assignments/assignments.module';
 
 @Module({
   imports: [
@@ -20,7 +21,7 @@ import { CoursesModule } from './courses/courses.modules';
         username: config.get<string>('DB_USER'),
         password: config.get<string>('DB_PASS'),
         database: config.get<string>('DB_NAME'),
-        entities: [User], // add more entities as you create them
+        autoLoadEntities: true, // add more entities as you create them
         synchronize: true, // auto-create tables (use migrations in prod)
         ssl: {
           rejectUnauthorized: false, // important for Render (no certs provided)
@@ -28,6 +29,7 @@ import { CoursesModule } from './courses/courses.modules';
       }),
     }),
     UsersModule,
+    AssignmentsModule,
     CoursesModule,
     AuthModule,
   ],

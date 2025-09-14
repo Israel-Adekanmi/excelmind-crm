@@ -14,6 +14,7 @@ export class CoursesService {
   async create(dto: CreateCourseDto, lecturerId: string) {
     try {
       const course = this.courseRepo.create({ ...dto, lecturerId });
+
       const saved = await this.courseRepo.save(course);
       return { error: false, message: 'Course created', data: saved };
     } catch (err) {
@@ -80,6 +81,19 @@ export class CoursesService {
         error: false,
         message: 'Course fetched successfully',
         data: course,
+      };
+    } catch (err) {
+      return { error: true, message: err.message, data: null };
+    }
+  }
+
+  async getAllEnrollments() {
+    try {
+      const enrollments = await this.enrollmentRepo.findAll();
+      return {
+        error: false,
+        message: 'Fetched all enrollments',
+        data: enrollments,
       };
     } catch (err) {
       return { error: true, message: err.message, data: null };

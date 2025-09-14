@@ -42,7 +42,7 @@ export class CoursesController {
   @Roles(Role.LECTURER) // restrict strictly to lecturers
   @ApiOperation({ description: 'Create a course (lecturer only)' })
   create(@Body() dto: CreateCourseDto, @Request() req: any) {
-    const lecturerId = req.user.userId; // userId from JWT payload
+    const lecturerId = req.user.sub; // userId from JWT payload
     return this.coursesService.create(dto, lecturerId);
   }
 
@@ -66,7 +66,7 @@ export class CoursesController {
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(
     FileInterceptor('file', {
-      limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
+      limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
       fileFilter: (req, file, cb) => {
         if (
           file.mimetype === 'application/pdf' ||
@@ -95,10 +95,11 @@ export class CoursesController {
     return this.coursesService.uploadSyllabus(id, uploadedUrl);
   }
 
-  @Get('/by-lecturer/:lecturerId')
+  @Get('/all-lecturer-courses')
   @ApiOperation({ description: 'Get all courses by a lecturer' })
   @ApiResponse({ status: 200, description: 'Courses by lecturer' })
-  findByLecturer(@Param('lecturerId') lecturerId: string) {
+  findByLecturer(@Request() req: any) {
+    const lecturerId = req.user.sub;
     return this.coursesService.findByLecturer(lecturerId);
   }
 
@@ -116,6 +117,15 @@ export class CoursesController {
     return this.coursesService.requestEnrollment(dto, req.user.userId);
   }
 
+  @Get('/enrollments')
+  @Roles(Role.ADMIN, Role.LECTURER)
+  @ApiOperation({
+    description: 'Get all enrollment requests (Admin/Lecturer only)',
+  })
+  getAllEnrollments() {
+    return this.coursesService.getAllEnrollments();
+  }
+
   @Patch('/:id/status')
   @Roles(Role.LECTURER, Role.ADMIN)
   @ApiOperation({ description: 'Approve or reject enrollment request' })
@@ -123,10 +133,11 @@ export class CoursesController {
     return this.coursesService.updateStatus(id, dto);
   }
 
-  @Get('/student/:studentId')
+  @Get('/student')
   @Roles(Role.STUDENT)
   @ApiOperation({ description: 'Get all courses a student is enrolled in' })
-  getByStudent(@Param('studentId') studentId: string) {
+  getByStudent(@Request() req: any) {
+    const studentId = req.user.sub;
     return this.coursesService.getByStudent(studentId);
   }
 

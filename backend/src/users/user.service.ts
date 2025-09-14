@@ -3,6 +3,7 @@ import { UserRepository } from './user.repository';
 import { CreateUserDto } from './dto/create-user.dto';
 // import { ResponseDto } from '../common/dto/response.dto';
 import * as bcrypt from 'bcrypt';
+import { Role } from 'src/auth/enum/role.enum';
 
 @Injectable()
 export class UsersService {
@@ -29,6 +30,37 @@ export class UsersService {
     try {
       const users = await this.userRepo.findAll();
       return { error: false, message: 'Fetched users', data: users };
+    } catch (err) {
+      return { error: true, message: err.message, data: null };
+    }
+  }
+
+  async getAllStudents() {
+    try {
+      const students = await this.userRepo.findByRole(Role.STUDENT);
+      return { error: false, message: 'Fetched all students', data: students };
+    } catch (err) {
+      return { error: true, message: err.message, data: null };
+    }
+  }
+
+  async getAllAdmins() {
+    try {
+      const admins = await this.userRepo.findByRole(Role.ADMIN);
+      return { error: false, message: 'Fetched all admins', data: admins };
+    } catch (err) {
+      return { error: true, message: err.message, data: null };
+    }
+  }
+
+  async getAllLecturers() {
+    try {
+      const lecturers = await this.userRepo.findByRole(Role.LECTURER);
+      return {
+        error: false,
+        message: 'Fetched all lecturers',
+        data: lecturers,
+      };
     } catch (err) {
       return { error: true, message: err.message, data: null };
     }
